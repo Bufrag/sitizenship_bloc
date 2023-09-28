@@ -1,27 +1,30 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:sitizenship_bloc/blocs/country_bloc.dart';
 import 'package:sitizenship_bloc/model/country_model.dart';
+import 'package:sitizenship_bloc/providers/favourite_country.dart';
 
-class DetailCountryPage extends StatefulWidget {
+class DetailCountryPage extends ConsumerStatefulWidget {
   final UserBloc? userBloc;
   final Countries countries;
-  DetailCountryPage({
+  final int? selectedIndex;
+  const DetailCountryPage({
     Key? key,
     this.userBloc,
     required this.countries,
+    this.selectedIndex,
   }) : super(key: key);
 
   @override
-  State<DetailCountryPage> createState() => _DetailCountryPageState();
+  ConsumerState<DetailCountryPage> createState() => _DetailCountryPageState();
 }
 
-class _DetailCountryPageState extends State<DetailCountryPage> {
+class _DetailCountryPageState extends ConsumerState<DetailCountryPage> {
   @override
   // void initState() {
   //   try {
@@ -72,6 +75,11 @@ class _DetailCountryPageState extends State<DetailCountryPage> {
   }
 
   Widget _buildDetailPage(BuildContext context, List<Countries> countries) {
+    final List<Countries> favoriteCountry =
+        ref.watch(favoriteCountriesProvider);
+    final selectedIndex = ref
+        .read(favoriteCountriesProvider.notifier)
+        .getIndexOfCountry(widget.countries);
     return Scaffold(
         body: Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -102,7 +110,9 @@ class _DetailCountryPageState extends State<DetailCountryPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    widget.countries.name,
+                    favoriteCountry.contains(widget.countries)
+                        ? favoriteCountry[selectedIndex!].name
+                        : widget.countries.name,
                     style: const TextStyle(
                       fontSize: 45,
                       color: Colors.black,
@@ -112,26 +122,40 @@ class _DetailCountryPageState extends State<DetailCountryPage> {
                   IconButton.outlined(
                       iconSize: 37,
                       highlightColor: Colors.black,
-                      color: (Countries.getFavouritesCountry
-                              .contains(widget.countries)
+                      onPressed: () {
+                        if (favoriteCountry.contains(widget.countries)) {
+                          ref
+                              .read(favoriteCountriesProvider.notifier)
+                              .removeFrotFavorites(widget.countries);
+                        } else {
+                          ref
+                              .read(favoriteCountriesProvider.notifier)
+                              .addToFavorites(widget.countries);
+                        }
+                      },
+                      color: (favoriteCountry.contains(widget.countries)
                           ? Colors.red
                           : Colors.grey),
-                      onPressed: () {
-                        setState(() {
-                          if (Countries.getFavouritesCountry
-                              .contains(widget.countries)) {
-                            Countries.removeFavouritesCountries(
-                                widget.countries);
-                          } else {
-                            Countries.addToFavouritesCountries(
-                                widget.countries);
-                          }
-                        });
-                      },
-                      icon: Icon(Countries.getFavouritesCountry
-                              .contains(widget.countries)
-                          ? Icons.favorite
-                          : Icons.favorite_outlined))
+                      // color: (Countries.getFavouritesCountry
+                      //         .contains(widget.countries)
+                      //     ? Colors.red
+                      //     : Colors.grey),
+                      // onPressed: () {
+                      //   setState(() {
+                      //     if (Countries.getFavouritesCountry
+                      //         .contains(widget.countries)) {
+                      //       Countries.removeFavouritesCountries(widget.countries);
+                      //     } else {
+                      //       Countries.addToFavouritesCountries(widget.countries);
+                      //     }
+                      //   });
+                      // },
+                      icon: Icon(Icons.save)
+                      // Icon(Countries.getFavouritesCountry
+                      //         .contains(widget.countries)
+                      //     ? Icons.favorite
+                      //     : Icons.favorite_outlined),
+                      )
                 ],
               ),
               Padding(
@@ -190,7 +214,6 @@ class _DetailCountryPageState extends State<DetailCountryPage> {
             ],
           ),
         ),
-
         ElevatedButton(
           onPressed: () {
             Navigator.of(context).pop();
@@ -209,174 +232,9 @@ class _DetailCountryPageState extends State<DetailCountryPage> {
             style: TextStyle(color: Colors.black),
           ),
         ),
-        // Positioned(
-        //   top: 20,
-        //   left: 10,
-        //   right: 300,
-        //   bottom: 700,
-        //   child: IconButton(
-        //       iconSize: 30,
-        //       highlightColor: Colors.white,
-        //       onPressed: () {
-        //         Navigator.pop(context);
-        //       },
-        //       icon: const Icon(
-        //         Icons.arrow_back_ios_rounded,
-        //         color: Colors.white,
-        //       )),
-        // ),
       ],
     ));
   }
-
-  // Widget _buildDetailPage(BuildContext context, List<Countries> countries) {
-  //   return Scaffold(
-  //   body: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-  // Container(
-  //   decoration: const BoxDecoration(
-  //     image: DecorationImage(
-  //       fit: BoxFit.cover,
-  //       image: NetworkImage(
-  //         'https://cdn.pixabay.com/photo/2019/10/21/15/05/rio-de-janeiro-4566312_1280.jpg',
-  //       ),
-  //     ),
-  //   ),
-  //   height: 350,
-  //   child: Padding(
-  //     padding: const EdgeInsets.only(top: 60, left: 20, right: 20),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         IconButton.filledTonal(
-  //             iconSize: 30,
-  //             highlightColor: Colors.black,
-  //             onPressed: () {
-  //               Navigator.pop(context);
-  //             },
-  //             icon: const Icon(Icons.arrow_back_ios_rounded)),
-  //       ],
-  //     ),
-  //   ),
-  // ),
-  // Expanded(
-  //   child: Container(
-  //     width: double.infinity,
-  //     height: 500,
-  //     color: Colors.white,
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //       children: [
-  //         Padding(
-  //           padding: const EdgeInsets.all(20.0),
-  //           child: Text(
-  //           widget.countries.name,
-  //             style: const TextStyle(
-  //               fontSize: 34,
-  //               fontWeight: FontWeight.w400,
-  //             ),
-  //           ),
-  //         ),
-  // Padding(
-  //   padding: const EdgeInsets.only(left: 20),
-  //   child: Text(
-  //     "Population  ${countries[widget.index].population}",
-  //     style: const TextStyle(
-  //         fontSize: 17, fontWeight: FontWeight.bold),
-  //   ),
-  // ),
-  // Padding(
-  //   padding: const EdgeInsets.only(left: 20),
-  //   child: Text(
-  //     countries[widget.index].taxRate,
-  //     style: const TextStyle(fontSize: 15, color: Colors.grey),
-  //   ),
-  // ),
-  // const SizedBox(
-  //   height: 5,
-  // ),
-  // Text("Passport : ${countries[widget.index].years}"),
-  // const SizedBox(
-  //   height: 5,
-  // ),
-  // SizedBox(
-  //   width: double.infinity,
-  //   height: 100,
-  //   child: Padding(
-  //     padding: const EdgeInsets.all(10.0),
-  //     child: ListView.separated(
-  //       scrollDirection: Axis.horizontal,
-  //       itemCount: 10,
-  //       itemBuilder: (context, index) => Container(
-  //         decoration: BoxDecoration(
-  //             color: Colors.grey.shade300.withOpacity(0.9),
-  //             borderRadius: BorderRadius.circular(40)),
-  //         width: 150,
-  //         height: 15,
-  //         child: const Row(
-  //           mainAxisAlignment: MainAxisAlignment.center,
-  //           children: [
-  //             Icon(Icons.bathroom),
-  //             SizedBox(
-  //               width: 10,
-  //             ),
-  //             Text(
-  //               "Bathroom",
-  //               style: TextStyle(fontWeight: FontWeight.bold),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //       separatorBuilder: (context, index) => const SizedBox(
-  //         width: 10,
-  //       ),
-  //     ),
-  //   ),
-  // ),
-  // const SizedBox(
-  //   height: 20,
-  // ),
-  // Row(
-  //   mainAxisAlignment: MainAxisAlignment.center,
-  //   children: [
-  //     Padding(
-  //       padding: const EdgeInsets.all(10.0),
-  //       child: Text(
-  //         "This is Europe:${countries[widget.index].europe} ",
-  //         style: const TextStyle(
-  //             fontSize: 23, fontWeight: FontWeight.bold),
-  //       ),
-  //     ),
-  //                 ElevatedButton(
-  //                   onPressed: () {},
-  //                   style: ButtonStyle(
-  //                       shadowColor:
-  //                           const MaterialStatePropertyAll(Colors.grey),
-  //                       elevation: const MaterialStatePropertyAll(20),
-  //                       shape: MaterialStatePropertyAll<RoundedRectangleBorder>(
-  //                           RoundedRectangleBorder(
-  //                               borderRadius: BorderRadius.circular(40))),
-  //                       backgroundColor:
-  //                           const MaterialStatePropertyAll(Colors.black),
-  //                       minimumSize:
-  //                           const MaterialStatePropertyAll(Size(45, 65))),
-  //                   child: const Padding(
-  //                     padding: EdgeInsets.all(8.0),
-  //                     child: Text(
-  //                       "Buy Now",
-  //                       style: TextStyle(color: Colors.white, fontSize: 16),
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           // ],
-  //         ),
-  //       ),
-  //     // ),
-  //   ]));
-  // }
 
   Widget _buildLoading() => const Center(
         child: CircularProgressIndicator(),

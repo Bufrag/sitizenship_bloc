@@ -71,4 +71,34 @@ class Countries {
   static void removeFavouritesCountries(Countries countries) {
     _favouriteCountries.remove(countries);
   }
+
+  @override
+  bool operator ==(covariant Countries other) {
+    if (identical(this, other)) return true;
+
+    return other.years == years &&
+        other.europe == europe &&
+        other.imagePath == imagePath &&
+        other.taxRate == taxRate &&
+        other.population == population &&
+        other.name == name &&
+        other.imageUrl == imageUrl &&
+        other.isEuropen == isEuropen &&
+        other.isPopular == isPopular &&
+        other.isFastPassport == isFastPassport;
+  }
+
+  @override
+  int get hashCode {
+    return years.hashCode ^
+        europe.hashCode ^
+        imagePath.hashCode ^
+        taxRate.hashCode ^
+        population.hashCode ^
+        name.hashCode ^
+        imageUrl.hashCode ^
+        isEuropen.hashCode ^
+        isPopular.hashCode ^
+        isFastPassport.hashCode;
+  }
 }

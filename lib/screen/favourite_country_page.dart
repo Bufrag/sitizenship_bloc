@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sitizenship_bloc/blocs/country_bloc.dart';
+import 'package:sitizenship_bloc/providers/favourite_country.dart';
+import 'package:sitizenship_bloc/screen/detail_country_page.dart';
 
 import '../model/country_model.dart';
 
-class FavouriteCountry extends StatefulWidget {
+class FavouriteCountry extends ConsumerStatefulWidget {
   const FavouriteCountry({super.key});
 
   @override
-  State<FavouriteCountry> createState() => _FavouriteCountryState();
+  ConsumerState<FavouriteCountry> createState() => _FavouriteCountryState();
 }
 
-class _FavouriteCountryState extends State<FavouriteCountry> {
+class _FavouriteCountryState extends ConsumerState<FavouriteCountry> {
   @override
   Widget build(BuildContext context) {
-    if (Countries.getFavouritesCountry.isEmpty) {
+    List<Countries> favorite = ref.watch(favoriteCountriesProvider);
+    if (favorite.isEmpty) {
       return Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -41,7 +46,8 @@ class _FavouriteCountryState extends State<FavouriteCountry> {
           ),
         ),
         body: ListView.builder(
-          itemCount: Countries.getFavouritesCountry.length,
+          itemCount: favorite.length,
+          // Countries.getFavouritesCountry.length,
           itemBuilder: (context, index) => Padding(
             padding:
                 const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
@@ -60,7 +66,7 @@ class _FavouriteCountryState extends State<FavouriteCountry> {
                         width: 70,
                         height: 70,
                         child: SvgPicture.network(
-                          Countries.getFavouritesCountry[index].imagePath,
+                          favorite[index].imagePath,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -72,24 +78,24 @@ class _FavouriteCountryState extends State<FavouriteCountry> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            Countries.getFavouritesCountry[index].name,
+                            favorite[index].name,
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 21),
                           ),
-                          Text(Countries.getFavouritesCountry[index].taxRate,
+                          Text(favorite[index].taxRate,
                               style: const TextStyle(color: Colors.grey))
                         ],
                       ),
                     ),
                     IconButton(
                         onPressed: () {
-                          // Navigator.of(context)
-                          //     .pushReplacement(MaterialPageRoute(
-                          //   builder: (context) => DetailCountryPage(
-                          //     userBloc: UserBloc(),
-                          //     countries: Countries.getFavouritesCountry[index],
-                          //   ),
-                          // ));
+                          Navigator.of(context)
+                              .pushReplacement(MaterialPageRoute(
+                            builder: (context) => DetailCountryPage(
+                              userBloc: UserBloc(),
+                              countries: favorite[index],
+                            ),
+                          ));
                         },
                         icon: const Icon(
                           Icons.arrow_forward_ios,
