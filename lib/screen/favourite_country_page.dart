@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sitizenship_bloc/blocs/country_bloc.dart';
-
-import 'package:sitizenship_bloc/screen/detail_country_page.dart';
 
 import '../model/country_model.dart';
 
@@ -31,7 +27,7 @@ class _FavouriteCountryState extends State<FavouriteCountry> {
         body: const Center(
           child: Text(
             "Empty",
-            style: TextStyle(fontSize: 50),
+            style: TextStyle(fontSize: 55),
           ),
         ),
       );
