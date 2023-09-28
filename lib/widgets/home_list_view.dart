@@ -161,7 +161,7 @@ class _ListTileForHomeState extends ConsumerState<ListViewHome> {
                                         ),
                                       ],
                                     ),
-                                    Text(
+                                    const Text(
                                       "Description",
                                       style: TextStyle(
                                           fontSize: 19,
@@ -181,7 +181,7 @@ class _ListTileForHomeState extends ConsumerState<ListViewHome> {
                                             ),
                                           );
                                         },
-                                        child: Text(
+                                        child: const Text(
                                           "Viev more ->",
                                           style: TextStyle(
                                               fontSize: 21,

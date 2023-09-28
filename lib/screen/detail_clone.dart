@@ -1,96 +1,31 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+//страница создана как костыль , т.к. не разобрался как передать избранные страны
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:sitizenship_bloc/blocs/country_bloc.dart';
 import 'package:sitizenship_bloc/model/country_model.dart';
 import 'package:sitizenship_bloc/providers/favourite_country.dart';
 
-class DetailCountryPage extends ConsumerStatefulWidget {
-
-  final UserBloc? userBloc;
+class DetailClone extends ConsumerStatefulWidget {
   final Countries countries;
   final int? selectedIndex;
-  const DetailCountryPage({
+  const DetailClone({
     Key? key,
-    this.userBloc,
     required this.countries,
     this.selectedIndex,
   }) : super(key: key);
 
   @override
-  ConsumerState<DetailCountryPage> createState() => _DetailCountryPageState();
+  ConsumerState<DetailClone> createState() => _DetailCountryPageState();
 }
 
-class _DetailCountryPageState extends ConsumerState<DetailCountryPage> {
-
-  @override
-  // void initState() {
-  //   try {
-  //     // widget.userBloc.add(GetUserList());
-  //   } catch (e) {
-  //     print("Ошибка которую я искал");
-  //   }
-  //   super.initState();
-  // }
-
-  // @override
-  // void dispose() {
-  //   widget.userBloc.close();
-  //   super.dispose();
-  // }
-
+class _DetailCountryPageState extends ConsumerState<DetailClone> {
   @override
   Widget build(BuildContext context) {
-  
-    return BlocProvider(
-      create: (context) => widget.userBloc!,
-      child: BlocListener<UserBloc, UserState>(
-        listener: (context, state) {
-          try {
-            if (state is UserError) {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(state.message!)));
-            }
-          } catch (e) {
-            print("Произошла ошибка:$e");
-          }
-        },
-        child: BlocBuilder<UserBloc, UserState>(
-          builder: (context, state) {
-            try {
-              if (state is UserInitial) {
-                return _buildLoading();
-              } else if (state is UserLoading) {
-                return _buildLoading();
-              } else if (state is UserLoaded) {
-                return _buildDetailPage(context, state.countries);
-              } else if (state is UserError) {
-                return const Center(
-                  child: Text("Произошла ошибка"),
-                );
-              }
-            } catch (e) {
-              print("Произошла ошибка при построении виджета:$e");
-            }
-            return const Center(
-              child: Text("Неизвестное состояние"),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDetailPage(BuildContext context, List<Countries> countries) {
-    final List<Countries> favoriteCountry =
-        ref.watch(favoriteCountriesProvider);
-    final selectedIndex = ref
-        .read(favoriteCountriesProvider.notifier)
-        .getIndexOfCountry(widget.countries);
+    List<Countries> favorite = ref.watch(favoriteCountriesProvider);
     return Scaffold(
         body: Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -121,9 +56,7 @@ class _DetailCountryPageState extends ConsumerState<DetailCountryPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    favoriteCountry.contains(widget.countries)
-                        ? favoriteCountry[selectedIndex!].name
-                        : widget.countries.name,
+                    favorite[widget.selectedIndex!].name,
                     style: const TextStyle(
                       fontSize: 45,
                       color: Colors.black,
@@ -134,7 +67,7 @@ class _DetailCountryPageState extends ConsumerState<DetailCountryPage> {
                       iconSize: 37,
                       highlightColor: Colors.black,
                       onPressed: () {
-                        if (favoriteCountry.contains(widget.countries)) {
+                        if (favorite.contains(widget.countries)) {
                           ref
                               .read(favoriteCountriesProvider.notifier)
                               .removeFrotFavorites(widget.countries);
@@ -144,7 +77,7 @@ class _DetailCountryPageState extends ConsumerState<DetailCountryPage> {
                               .addToFavorites(widget.countries);
                         }
                       },
-                      color: (favoriteCountry.contains(widget.countries)
+                      color: (favorite.contains(widget.countries)
                           ? Colors.red
                           : Colors.grey),
                       // color: (Countries.getFavouritesCountry
@@ -246,8 +179,4 @@ class _DetailCountryPageState extends ConsumerState<DetailCountryPage> {
       ],
     ));
   }
-
-  Widget _buildLoading() => const Center(
-        child: CircularProgressIndicator(),
-      );
 }

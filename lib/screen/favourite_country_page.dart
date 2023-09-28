@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sitizenship_bloc/blocs/country_bloc.dart';
 import 'package:sitizenship_bloc/providers/favourite_country.dart';
+import 'package:sitizenship_bloc/screen/detail_clone.dart';
 import 'package:sitizenship_bloc/screen/detail_country_page.dart';
 
 import '../model/country_model.dart';
@@ -19,7 +20,7 @@ class FavouriteCountry extends ConsumerStatefulWidget {
 class _FavouriteCountryState extends ConsumerState<FavouriteCountry> {
   @override
   Widget build(BuildContext context) {
-    List<Countries> favorite = ref.watch(favoriteCountriesProvider);
+    final List<Countries> favorite = ref.watch(favoriteCountriesProvider);
     if (favorite.isEmpty) {
       return Scaffold(
         appBar: AppBar(
@@ -91,9 +92,9 @@ class _FavouriteCountryState extends ConsumerState<FavouriteCountry> {
                         onPressed: () {
                           Navigator.of(context)
                               .pushReplacement(MaterialPageRoute(
-                            builder: (context) => DetailCountryPage(
-                              userBloc: UserBloc(),
+                            builder: (context) => DetailClone(
                               countries: favorite[index],
+                              selectedIndex: index,
                             ),
                           ));
                         },
