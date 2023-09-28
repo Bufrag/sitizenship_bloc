@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:sitizenship_bloc/model/country_model.dart';
 import 'package:sitizenship_bloc/providers/favourite_country.dart';
+import 'package:sitizenship_bloc/screen/homepage.dart';
 
 class DetailClone extends ConsumerStatefulWidget {
   final Countries countries;
@@ -160,7 +161,7 @@ class _DetailCountryPageState extends ConsumerState<DetailClone> {
         ),
         ElevatedButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            Navigator.of(context).popUntil((route) => route.isFirst);
           },
           style: ButtonStyle(
               shadowColor: const MaterialStatePropertyAll(Colors.black),

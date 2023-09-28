@@ -28,6 +28,7 @@ class _HomeWidgetState extends State<HomeWidget> {
             children: [
               IconButton(
                   onPressed: () {
+                    Navigator.pop(context);
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => FavouriteCountry(),
                     ));
