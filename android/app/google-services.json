@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "248378202394",
+    "firebase_url": "https://sitizenship-bloc-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "sitizenship-bloc",
+    "storage_bucket": "sitizenship-bloc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:248378202394:android:c77f489ed13834d73574a3",
+        "android_client_info": {
+          "package_name": "com.example.sitizenship_bloc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZXZqXBgqahQakk9p5RNH1jHD2LZTbWxY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
