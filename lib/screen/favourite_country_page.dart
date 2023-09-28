@@ -27,7 +27,7 @@ class _FavouriteCountryState extends State<FavouriteCountry> {
         body: const Center(
           child: Text(
             "Empty",
-            style: TextStyle(fontSize: 55),
+            style: TextStyle(fontSize: 40),
           ),
         ),
       );
